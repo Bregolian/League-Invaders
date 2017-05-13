@@ -5,12 +5,12 @@ public class GameObject {
 	int y;
 	int width;
 	int height;
-
+	boolean isAlive=true;
 	void update() {
-		y+=3;
+		
 	}
 
 	void draw(Graphics Gr) {
-		Gr.fillRect(x, y, 100, 100);
+		
 	}
 }
