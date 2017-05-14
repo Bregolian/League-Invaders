@@ -5,7 +5,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -17,10 +21,22 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	int currentState = MENU_STATE;
 	Rocketship Rocket=new Rocketship(250,700,50,50);
 	ObjectManager om=new ObjectManager();
+	public static BufferedImage alienImg;
+	public static BufferedImage rocketImg;
+	public static BufferedImage bulletImg;
 	//GameObject Ga;
 	Font titleFont=new Font("Arial", Font.PLAIN, 48);
 	Font smallFont=new Font("Arial", Font.PLAIN, 24);
 	public GamePanel() {
+		try {
+			alienImg = ImageIO.read(this.getClass().getResourceAsStream("alien.png"));
+			rocketImg = ImageIO.read(this.getClass().getResourceAsStream("rocket.png"));
+			bulletImg = ImageIO.read(this.getClass().getResourceAsStream("bullet.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		timer = new Timer(1000 / 60, this);
 		// Ga =new GameObject();
 		om.addObject(Rocket);
@@ -107,6 +123,15 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	public void updateGameState() {
 		om.update();
 		om.manageEnemies();
+		om.checkCollision();
+		if (Rocket.isAlive==false) {
+			currentState=END_STATE;
+			JOptionPane.showMessageDialog(null, ("You killed "+om.getScore()+" enemies!"));
+			om.reset();
+			Rocket = new Rocketship(250,700,50,50);
+			om.addObject(Rocket);
+			
+		}
 	}
 
 	public void updateEndState() {
